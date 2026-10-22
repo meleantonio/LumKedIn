@@ -62,8 +62,17 @@ class Matcher:
     def __init__(self, members, backend=None):
         self.m=members
         self.backend="tfidf"; self.backend_note=""
-        want=(backend or os.getenv("KYM_BACKEND","tfidf")).lower()
-        if want=="cognee":
+        want=(backend or os.getenv("KYM_BACKEND") or "auto").lower()
+        if want=="auto":
+            want="cognee-cloud" if os.getenv("COGNEE_API_KEY") else ("cognee" if os.getenv("LLM_API_KEY") else "tfidf")
+            if want=="tfidf": self.backend_note="No COGNEE_API_KEY or LLM_API_KEY set - running offline TF-IDF/SQLite."
+        if want=="cognee-cloud":
+            from . import cognee_cloud as cc
+            if not cc.available(): self.backend_note="cognee-cloud needs COGNEE_API_KEY and COGNEE_API_URL - using TF-IDF/SQLite."
+            else:
+                try: cc.check(); self.backend="cognee-cloud"; self.cb=cc
+                except Exception as e: self.backend_note=f"Cognee Cloud unreachable ({type(e).__name__}) - using TF-IDF/SQLite."
+        elif want=="cognee":
             from . import cognee_backend as cb
             if not cb.available(): self.backend_note="Cognee requested but not installed or LLM_API_KEY missing - using TF-IDF/SQLite."
             else:
@@ -92,7 +101,7 @@ class Matcher:
         if h[i,j]>=h[j,i]: return f"{a['name'].split()[-1]} wants to learn \"{a['wants_to_learn']}\" and {b['name']} can talk about \"{b['can_talk_about']}\"."
         return f"{b['name'].split()[-1]} wants to learn \"{b['wants_to_learn']}\" and {a['name']} can talk about \"{a['can_talk_about']}\"."
     def _pair(self,a,b,s,tmpl):
-        if self.backend=="cognee":
+        if self.backend.startswith("cognee"):
             try:
                 ctx=self.cb.pair_context(a,b)
                 if ctx: tmpl=f"{tmpl} Memory graph: {ctx.strip()[:300]}"
@@ -107,13 +116,13 @@ f"Why: {reason}\n\nWould a 20-minute coffee chat in the next couple of weeks wor
         return {"a":a["name"],"b":b["name"],"score":round(float(s),3),"reason":reason,"draft":draft}
     def speakers(self, theme, k=5):
         q=self.e([theme])[0]; s=self.offer@q; idx=list(np.argsort(-s)[:k])
-        if self.backend=="cognee":
+        if self.backend.startswith("cognee"):
             try:
                 hits,ans=self.cb.rank_speakers(self.m,theme,k)
                 if hits:
                     idx=(hits+[i for i in idx if i not in hits])[:k]
                     return [{"name":self.m[i]["name"],"institution":self.m[i]["institution"],"score":round(float(s[i]),3),
-                             "reason":(f"Cognee graph pick #{n+1}. " if i in hits else "TF-IDF fill. ")+f"Can talk about \"{self.m[i]['can_talk_about']}\"."} for n,i in enumerate(idx)]
+                             "reason":(f"{self.backend} graph pick #{n+1}. " if i in hits else "TF-IDF fill. ")+f"Can talk about \"{self.m[i]['can_talk_about']}\"."} for n,i in enumerate(idx)]
             except Exception: pass
         return [{"name":self.m[i]["name"],"institution":self.m[i]["institution"],"score":round(float(s[i]),3),
                  "reason":llm(f"In one sentence, why is this person a good speaker for a seminar on '{theme}'? {self.m[i]}") or f"Can talk about \"{self.m[i]['can_talk_about']}\"; teaches {self.m[i]['teaching_topics']}."} for i in idx]

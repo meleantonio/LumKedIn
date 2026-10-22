@@ -3,7 +3,7 @@ from .core import load_members, Matcher
 def main():
     p=argparse.ArgumentParser(prog="kym",description="Know Your Members: intro + speaker matcher")
     p.add_argument("--members",default="data/sample_members.csv")
-    p.add_argument("--backend",choices=["tfidf","cognee"],default=None,help="default: $KYM_BACKEND or tfidf")
+    p.add_argument("--backend",choices=["auto","cognee-cloud","cognee","tfidf"],default=None,help="default: $KYM_BACKEND or auto")
     sp=p.add_subparsers(dest="cmd",required=True)
     i=sp.add_parser("intros"); i.add_argument("-k",type=int,default=5); i.add_argument("--drafts",action="store_true"); i.add_argument("--json",action="store_true")
     s=sp.add_parser("speakers"); s.add_argument("theme"); s.add_argument("-k",type=int,default=5); s.add_argument("--json",action="store_true")

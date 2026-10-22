@@ -50,8 +50,19 @@ export LLM_API_KEY=...                       # required by Cognee
 KYM_BACKEND=cognee streamlit run app.py      # or use the "Memory backend" toggle in the sidebar
 python -m kym.cli --backend cognee speakers "AI and assessment integrity"
 ```
-### Hosted Cognee (MCP connector inside Grok Bot)
-For the hackathon demo, the profiles were also stored in **hosted Cognee** through its MCP connector (`remember` / `recall`, dataset `know-your-members-demo`). The box has no hosted-API key or URL, so the repo has **no `cognee-cloud` code mode yet**. The hosted demo runs through the connector, and the local `cognee` mode above is the code path. You can see the real recall outputs and timings, plus a comparison with TF-IDF, in [docs/cognee-mcp-demo.md](docs/cognee-mcp-demo.md).
+### Backend selection (default: `auto`)
+`KYM_BACKEND=auto` (the default), or the sidebar toggle or `--backend`, picks the backend in this order:
+1. **`cognee-cloud`** if `COGNEE_API_KEY` is set. It recalls over the hosted dataset `know-your-members-demo` (`KYM_COGNEE_DATASET`) through `POST {COGNEE_API_URL}/api/v1/recall` with the `X-Api-Key` header (plus `X-Tenant-Id` if `COGNEE_TENANT_ID` is set). This drives the speaker ranking and the intro "Memory graph:" context.
+2. **`cognee`** (local SDK) if `LLM_API_KEY` is set.
+3. **TF-IDF/SQLite** otherwise. The UI shows a visible notice, and the active backend is always displayed in the UI.
+
+```bash
+export COGNEE_API_URL=https://<your-tenant>.aws.cognee.ai   # API Keys page -> Connection Details
+export COGNEE_API_KEY=...                                     # never commit it
+streamlit run app.py
+python -m kym.cli --backend cognee-cloud speakers "classroom simulations"
+```
+The dataset was ingested through the hosted Cognee MCP connector. See the real recall outputs and timings in [docs/cognee-mcp-demo.md](docs/cognee-mcp-demo.md).
 
 **It never breaks the demo.** If Cognee isn't installed, `LLM_API_KEY` is missing, or ingest or search fails, the app shows a notice and falls back to TF-IDF/SQLite. Code: `kym/cognee_backend.py`.
 

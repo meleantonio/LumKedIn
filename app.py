@@ -7,12 +7,14 @@ up=st.sidebar.file_uploader("Member profiles (CSV or JSON)",type=["csv","json"])
 path="data/sample_members.csv"
 if up:
     path=os.path.join(tempfile.mkdtemp(),up.name); open(path,"wb").write(up.getvalue())
-be=st.sidebar.radio("Memory backend",["tfidf","cognee"],index=1 if os.getenv("KYM_BACKEND","").lower()=="cognee" else 0,
-    help="Cognee builds a knowledge graph (needs LLM_API_KEY + pip install -r requirements-cognee.txt). Falls back to TF-IDF automatically.")
+opts=["auto","cognee-cloud","cognee","tfidf"]
+be=st.sidebar.radio("Memory backend",opts,index=opts.index(os.getenv("KYM_BACKEND","auto").lower()) if os.getenv("KYM_BACKEND","auto").lower() in opts else 0,
+    help="auto = cognee-cloud if COGNEE_API_KEY, else local cognee if LLM_API_KEY, else TF-IDF. Any failure falls back to TF-IDF.")
 @st.cache_resource(show_spinner="Building member memory...")
 def get(p,_k,b): return Matcher(load_members(p),b)
 m=get(path,up.name if up else "",be)
-if m.backend_note: st.sidebar.warning(m.backend_note)
+if m.backend_note: st.warning(m.backend_note)
+st.info(f"Active backend: **{m.backend}**")
 st.sidebar.write(f"{len(m.m)} members · backend: **{m.backend}** · embeddings: **{m.e.mode}**")
 t1,t2,t3=st.tabs(["Intros","Speaker finder","Members"])
 with t1:

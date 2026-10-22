@@ -17,3 +17,6 @@ Before the demo, run `pip install -r requirements-cognee.txt` and `export LLM_AP
 
 ## Hosted Cognee via the Grok Bot connector (live, about 40 s)
 The dataset `know-your-members-demo` is already ingested. Ask Grok Bot to run `recall` on "Who could speak on classroom simulations?" and it answers **Ms Priya Raman**, which matches TF-IDF's #1 on screen. Then ask "Why should Prof Edwin Hale and Dr Nadia Petrova meet?" for a two-way rationale (AI policy ↔ AI tutors and wellbeing) that is richer than the template. Each recall takes a few seconds. The backup is to read the outputs from `docs/cognee-mcp-demo.md`.
+
+## Cognee Cloud as the default (if COGNEE_API_URL + COGNEE_API_KEY are set)
+Start with `streamlit run app.py`. The banner reads **Active backend: cognee-cloud**, and the speaker reasons say "cognee-cloud graph pick #n". If the cloud is unreachable, a yellow notice appears and the demo continues on TF-IDF.
