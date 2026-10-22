@@ -50,6 +50,9 @@ export LLM_API_KEY=...                       # required by Cognee
 KYM_BACKEND=cognee streamlit run app.py      # or use the "Memory backend" toggle in the sidebar
 python -m kym.cli --backend cognee speakers "AI and assessment integrity"
 ```
+### Hosted Cognee (MCP connector inside Grok Bot)
+For the hackathon demo, the profiles were also stored in **hosted Cognee** through its MCP connector (`remember` / `recall`, dataset `know-your-members-demo`). The box has no hosted-API key or URL, so the repo has **no `cognee-cloud` code mode yet**. The hosted demo runs through the connector, and the local `cognee` mode above is the code path. You can see the real recall outputs and timings, plus a comparison with TF-IDF, in [docs/cognee-mcp-demo.md](docs/cognee-mcp-demo.md).
+
 **It never breaks the demo.** If Cognee isn't installed, `LLM_API_KEY` is missing, or ingest or search fails, the app shows a notice and falls back to TF-IDF/SQLite. Code: `kym/cognee_backend.py`.
 
 ## Privacy

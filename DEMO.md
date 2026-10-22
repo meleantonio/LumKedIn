@@ -14,3 +14,6 @@
 
 ## Optional Cognee segment (swap into 1:50–2:30 if `LLM_API_KEY` is set)
 Before the demo, run `pip install -r requirements-cognee.txt` and `export LLM_API_KEY=...`, then start the app once so `cognify` builds the graph. It takes a while, so warm it up in advance. In the sidebar, switch **Memory backend → cognee** and run "AI and assessment integrity" again. The reasons now say "Cognee graph pick #n", and the intro reasons include a "Memory graph:" sentence. If anything fails, a yellow notice appears and the demo carries on with TF-IDF.
+
+## Hosted Cognee via the Grok Bot connector (live, about 40 s)
+The dataset `know-your-members-demo` is already ingested. Ask Grok Bot to run `recall` on "Who could speak on classroom simulations?" and it answers **Ms Priya Raman**, which matches TF-IDF's #1 on screen. Then ask "Why should Prof Edwin Hale and Dr Nadia Petrova meet?" for a two-way rationale (AI policy ↔ AI tutors and wellbeing) that is richer than the template. Each recall takes a few seconds. The backup is to read the outputs from `docs/cognee-mcp-demo.md`.
