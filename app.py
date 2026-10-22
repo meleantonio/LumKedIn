@@ -103,7 +103,7 @@ with t1:
         st.write("")
 with t2:
     c1,c2=st.columns([4,1])
-    th=c1.text_input("Seminar theme","AI and assessment integrity")
+    th=c1.text_input("Seminar theme",os.getenv("KYM_THEME","AI and assessment integrity"))
     n_=c2.number_input("Shortlist",1,10,5)
     res=speakers(m,key,th,int(n_)); mx=max([r["score"] for r in res]+[1e-9])
     for n,x in enumerate(res,1):
