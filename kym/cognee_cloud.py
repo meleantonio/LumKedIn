@@ -2,10 +2,37 @@
 Env: COGNEE_API_KEY (required), COGNEE_API_URL (tenant base URL, e.g. https://your-tenant.aws.cognee.ai),
 optional COGNEE_TENANT_ID, KYM_COGNEE_DATASET (default know-your-members-demo)."""
 import json, os, urllib.request
-DATASET = os.getenv("KYM_COGNEE_DATASET", "know-your-members-demo")
+DATASET = os.getenv("KYM_DATASET") or os.getenv("KYM_COGNEE_DATASET") or "know-your-members-demo"
+
+def set_dataset(name):
+    global DATASET
+    if name: DATASET = name
 
 def available():
     return bool(os.getenv("COGNEE_API_KEY") and os.getenv("COGNEE_API_URL"))
+
+def _hdr():
+    h = {"X-Api-Key": os.environ["COGNEE_API_KEY"]}
+    if os.getenv("COGNEE_TENANT_ID"): h["X-Tenant-Id"] = os.environ["COGNEE_TENANT_ID"]
+    return h
+
+def _base():
+    url = os.environ["COGNEE_API_URL"].rstrip("/")
+    return url if url.endswith("/api/v1") else url + "/api/v1"
+
+def ingest(docs, dataset=None, timeout=600):
+    """POST /add (multipart, repeated raw_data) then /cognify. Blocks until cognify returns."""
+    import uuid
+    ds = dataset or DATASET; b = uuid.uuid4().hex; body = b""
+    body += f'--{b}\r\nContent-Disposition: form-data; name="datasetName"\r\n\r\n{ds}\r\n'.encode()
+    for i, d in enumerate(docs):  # raw_data must be file parts, plain fields are ignored
+        body += (f'--{b}\r\nContent-Disposition: form-data; name="data"; filename="member_{i}.txt"\r\n'
+                 f'Content-Type: text/plain\r\n\r\n').encode() + d.encode() + b"\r\n"
+    body += f"--{b}--\r\n".encode()
+    req = urllib.request.Request(_base() + "/add", data=body, method="POST",
+                                 headers={**_hdr(), "Content-Type": f"multipart/form-data; boundary={b}"})
+    with urllib.request.urlopen(req, timeout=timeout) as r: r.read()
+    return _post("/cognify", {"datasets": [ds]}, timeout=timeout)
 
 def _post(path, body, timeout=60):
     url = os.environ["COGNEE_API_URL"].rstrip("/")

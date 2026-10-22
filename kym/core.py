@@ -1,3 +1,4 @@
+import os
 """Core: ingest, embed, store, match. Works offline with TF-IDF."""
 import csv, json, os, sqlite3, itertools
 import numpy as np
@@ -58,6 +59,12 @@ def _overlap(a,b):
     wa={w.strip().lower() for w in a.replace(";",",").split(",") if w.strip()}
     return [w for w in wa if any(t in b.lower() for t in w.split() if len(t)>4)]
 
+def _blurb(p):
+    t=p['name']+(f" ({', '.join(x for x in (p.get('role',''),p.get('institution','')) if x)})" if p.get('role') or p.get('institution') else "")
+    if p.get('interests'): t+=f" works on {p['interests']}"
+    if p.get('can_talk_about'): t+=f" and could talk about {p['can_talk_about']}"
+    return t+"."
+
 class Matcher:
     def __init__(self, members, backend=None):
         self.m=members
@@ -98,8 +105,12 @@ class Matcher:
         return res
     def help_reason(self,i,j,h):
         a,b=self.m[i],self.m[j]
-        if h[i,j]>=h[j,i]: return f"{a['name'].split()[-1]} wants to learn \"{a['wants_to_learn']}\" and {b['name']} can talk about \"{b['can_talk_about']}\"."
-        return f"{b['name'].split()[-1]} wants to learn \"{b['wants_to_learn']}\" and {a['name']} can talk about \"{a['can_talk_about']}\"."
+        if h[i,j]<h[j,i]: a,b=b,a
+        w,c=a.get('wants_to_learn','').strip(),b.get('can_talk_about','').strip()
+        if w and c: return f"{a['name']} wants to learn \"{w}\" and {b['name']} can talk about \"{c}\"."
+        if w: return f"{a['name']} wants to learn \"{w}\", which overlaps with {b['name']}'s work."
+        if c: return f"{b['name']} can talk about \"{c}\", which overlaps with {a['name']}'s interests."
+        return f"{a['name']} and {b['name']} have overlapping interests."
     def _pair(self,a,b,s,tmpl):
         if self.backend.startswith("cognee"):
             try:
@@ -109,9 +120,8 @@ class Matcher:
         reason=llm(f"In one sentence, why should these two economics educators meet?\nA: {a}\nB: {b}") or tmpl
         draft=llm(f"Write a short warm email introducing these two community members to each other. Reason: {reason}\nA: {a}\nB: {b}") or (
 f"Subject: Intro: {a['name']} <> {b['name']}\n\nHi {greet_name(a['name'])} and {greet_name(b['name'])},\n\n"
-f"I'd love to introduce you two from our Generative AI in Economics Teaching community.\n\n"
-f"{a['name']} ({a['role']}, {a['institution']}) works on {a['interests']} and could talk about {a['can_talk_about']}.\n"
-f"{b['name']} ({b['role']}, {b['institution']}) works on {b['interests']} and could talk about {b['can_talk_about']}.\n\n"
+f"I'd love to introduce you two from our {os.getenv('KYM_COMMUNITY','Generative AI in Economics Teaching')} community.\n\n"
+f"{_blurb(a)}\n{_blurb(b)}\n\n"
 f"Why: {reason}\n\nWould a 20-minute coffee chat in the next couple of weeks work? I'll leave it with you.\n\nBest,\nAntonio")
         return {"a":a["name"],"b":b["name"],"score":round(float(s),3),"reason":reason,"draft":draft}
     def speakers(self, theme, k=5):
