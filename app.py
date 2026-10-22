@@ -16,14 +16,19 @@ m=get(path,up.name if up else "",be)
 if m.backend_note: st.warning(m.backend_note)
 st.info(f"Active backend: **{m.backend}**")
 st.sidebar.write(f"{len(m.m)} members · backend: **{m.backend}** · embeddings: **{m.e.mode}**")
+@st.cache_data(show_spinner="Asking member memory...")
+def intros(_m,key,k): return _m.intros(k)
+@st.cache_data(show_spinner="Asking member memory...")
+def speakers(_m,key,th,k): return _m.speakers(th,k)
+key=(path,be,m.backend)
 t1,t2,t3=st.tabs(["Intros","Speaker finder","Members"])
 with t1:
     k=st.slider("Number of intros",1,10,5)
-    for x in m.intros(k):
+    for x in intros(m,key,k):
         with st.expander(f"**{x['a']}  ↔  {x['b']}**  · score {x['score']}",expanded=True):
             st.write(x["reason"]); st.text_area("Intro draft (copy & send yourself)",x["draft"],height=260,key=x['a']+x['b'])
 with t2:
     th=st.text_input("Seminar theme","AI and assessment integrity")
-    for n,x in enumerate(m.speakers(th,st.slider("Shortlist size",1,10,5)),1):
+    for n,x in enumerate(speakers(m,key,th,st.slider("Shortlist size",1,10,5)),1):
         st.markdown(f"**{n}. {x['name']}** — {x['institution']} · {x['score']}  \n{x['reason']}")
 with t3: st.dataframe(m.m,use_container_width=True)

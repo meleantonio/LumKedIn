@@ -118,11 +118,15 @@ f"Why: {reason}\n\nWould a 20-minute coffee chat in the next couple of weeks wor
         q=self.e([theme])[0]; s=self.offer@q; idx=list(np.argsort(-s)[:k])
         if self.backend.startswith("cognee"):
             try:
-                hits,ans=self.cb.rank_speakers(self.m,theme,k)
+                hits,extra=self.cb.rank_speakers(self.m,theme,k)
                 if hits:
                     idx=(hits+[i for i in idx if i not in hits])[:k]
-                    return [{"name":self.m[i]["name"],"institution":self.m[i]["institution"],"score":round(float(s[i]),3),
-                             "reason":(f"{self.backend} graph pick #{n+1}. " if i in hits else "TF-IDF fill. ")+f"Can talk about \"{self.m[i]['can_talk_about']}\"."} for n,i in enumerate(idx)]
+                    def why(i,n):
+                        base=f"Can talk about \"{self.m[i]['can_talk_about']}\"."
+                        if i not in hits: return "TF-IDF fill. "+base
+                        r=extra.get(i) if isinstance(extra,dict) else None
+                        return f"{self.backend} graph pick #{n+1}: {r}" if r else f"{self.backend} graph pick #{n+1}. {base}"
+                    return [{"name":self.m[i]["name"],"institution":self.m[i]["institution"],"score":round(float(s[i]),3),"reason":why(i,n)} for n,i in enumerate(idx)]
             except Exception: pass
         return [{"name":self.m[i]["name"],"institution":self.m[i]["institution"],"score":round(float(s[i]),3),
                  "reason":llm(f"In one sentence, why is this person a good speaker for a seminar on '{theme}'? {self.m[i]}") or f"Can talk about \"{self.m[i]['can_talk_about']}\"; teaches {self.m[i]['teaching_topics']}."} for i in idx]

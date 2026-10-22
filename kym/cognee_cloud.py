@@ -34,10 +34,28 @@ def recall(query):
 def check():
     recall("ping"); return True
 
+import re, unicodedata
+def norm(t):
+    """Cloud answers use narrow no-break spaces, ** markdown, and non-ASCII dashes; normalise them."""
+    t = unicodedata.normalize("NFKC", t).replace("*", "")
+    t = re.sub(r"[\u2010-\u2015]", "-", t)
+    return re.sub(r"\s+", " ", t)
+
 def rank_speakers(members, theme, k):
+    """Return (ordered member indices, {index: cloud reason})."""
     ans = recall(f"Who could speak on {theme}? List full names, best first, with one reason each.")
-    pos = {i: ans.find(m["name"]) for i, m in enumerate(members)}
-    return sorted([i for i, p in pos.items() if p >= 0], key=lambda i: pos[i])[:k], ans
+    lines = [norm(l) for l in ans.splitlines() if l.strip()]
+    flat = norm(ans); pos = {i: flat.find(norm(m["name"])) for i, m in enumerate(members)}
+    hits = sorted([i for i, p in pos.items() if p >= 0], key=lambda i: pos[i])[:k]
+    reasons = {}
+    for i in hits:
+        n = norm(members[i]["name"])
+        for l in lines:
+            if n in l:
+                r = l.split(n, 1)[1].strip(" -:,.\u2013")
+                if r: reasons[i] = r[0].upper() + r[1:]
+                break
+    return hits, reasons
 
 def pair_context(a, b):
-    return recall(f"Why should {a['name']} and {b['name']} meet, and what could each learn from the other? One sentence.")
+    return norm(recall(f"Why should {a['name']} and {b['name']} meet, and what could each learn from the other? One sentence."))
