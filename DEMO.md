@@ -11,3 +11,6 @@
 **2:30–2:50 CLI.** Run `python -m kym.cli speakers "LLM coding for econometrics"` and `intros --json`, which you can pipe into a newsletter or a Slack workflow.
 
 **2:50–3:00 Reuse.** It's MIT licensed. Another community exports its member form to CSV and runs it next week. Set `OPENAI_API_KEY` (or any compatible endpoint) to get LLM reasons and drafts, and Supabase for pgvector.
+
+## Optional Cognee segment (swap into 1:50–2:30 if `LLM_API_KEY` is set)
+Before the demo, run `pip install -r requirements-cognee.txt` and `export LLM_API_KEY=...`, then start the app once so `cognify` builds the graph. It takes a while, so warm it up in advance. In the sidebar, switch **Memory backend → cognee** and run "AI and assessment integrity" again. The reasons now say "Cognee graph pick #n", and the intro reasons include a "Memory graph:" sentence. If anything fails, a yellow notice appears and the demo carries on with TF-IDF.

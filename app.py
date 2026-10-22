@@ -7,10 +7,13 @@ up=st.sidebar.file_uploader("Member profiles (CSV or JSON)",type=["csv","json"])
 path="data/sample_members.csv"
 if up:
     path=os.path.join(tempfile.mkdtemp(),up.name); open(path,"wb").write(up.getvalue())
-@st.cache_resource
-def get(p,_k): return Matcher(load_members(p))
-m=get(path,up.name if up else "")
-st.sidebar.write(f"{len(m.m)} members · embeddings: **{m.e.mode}**")
+be=st.sidebar.radio("Memory backend",["tfidf","cognee"],index=1 if os.getenv("KYM_BACKEND","").lower()=="cognee" else 0,
+    help="Cognee builds a knowledge graph (needs LLM_API_KEY + pip install -r requirements-cognee.txt). Falls back to TF-IDF automatically.")
+@st.cache_resource(show_spinner="Building member memory...")
+def get(p,_k,b): return Matcher(load_members(p),b)
+m=get(path,up.name if up else "",be)
+if m.backend_note: st.sidebar.warning(m.backend_note)
+st.sidebar.write(f"{len(m.m)} members · backend: **{m.backend}** · embeddings: **{m.e.mode}**")
 t1,t2,t3=st.tabs(["Intros","Speaker finder","Members"])
 with t1:
     k=st.slider("Number of intros",1,10,5)

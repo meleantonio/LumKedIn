@@ -41,6 +41,17 @@ create table members (name text primary key, data jsonb, embedding vector(1536))
 ```
 (TF-IDF vectors vary in dimension, so only enable the Supabase mirror together with API embeddings.)
 
+## Optional: Cognee memory backend 🧠
+[Cognee](https://github.com/topoteretes/cognee) (a hackathon technology partner) can serve as the member memory. When enabled, profiles are ingested with `cognee.add` and `cognee.cognify`, which builds a knowledge graph. After that, `cognee.search` (GRAPH_COMPLETION) ranks the speaker shortlist and adds graph context to each intro reason.
+```bash
+pip install -r requirements-cognee.txt      # pinned cognee==1.6.5 (heavy, so it's optional)
+export LLM_API_KEY=...                       # required by Cognee
+# OpenAI-compatible endpoint: also set LLM_PROVIDER / LLM_MODEL / LLM_ENDPOINT (see Cognee docs)
+KYM_BACKEND=cognee streamlit run app.py      # or use the "Memory backend" toggle in the sidebar
+python -m kym.cli --backend cognee speakers "AI and assessment integrity"
+```
+**It never breaks the demo.** If Cognee isn't installed, `LLM_API_KEY` is missing, or ingest or search fails, the app shows a notice and falls back to TF-IDF/SQLite. Code: `kym/cognee_backend.py`.
+
 ## Privacy
 Get members' consent before you ingest their profiles. Keep real CSVs and `kym.sqlite` out of git (`.gitignore` covers `*.sqlite` and `.env`).
 
