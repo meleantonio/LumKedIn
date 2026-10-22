@@ -65,6 +65,10 @@ def _blurb(p):
     if p.get('can_talk_about'): t+=f" and could talk about {p['can_talk_about']}"
     return t+"."
 
+def _spk(p):
+    bits=[f"Can talk about \"{p['can_talk_about']}\"" if p.get('can_talk_about') else "",f"teaches {p['teaching_topics']}" if p.get('teaching_topics') else ""]
+    return ("; ".join(b for b in bits if b) or f"Keyword match on role and interests ({p.get('interests') or p.get('role') or 'profile'})")+"."
+
 class Matcher:
     def __init__(self, members, backend=None):
         self.m=members
@@ -132,11 +136,12 @@ f"Why: {reason}\n\nWould a 20-minute coffee chat in the next couple of weeks wor
                 if hits:
                     idx=(hits+[i for i in idx if i not in hits])[:k]
                     def why(i,n):
-                        base=f"Can talk about \"{self.m[i]['can_talk_about']}\"."
+                        c=self.m[i].get('can_talk_about','').strip()
+                        base=f"Can talk about \"{c}\"." if c else "Keyword match on role and interests ("+(self.m[i].get('interests') or self.m[i].get('role') or 'profile')+")."
                         if i not in hits: return "TF-IDF fill. "+base
                         r=extra.get(i) if isinstance(extra,dict) else None
                         return f"{self.backend} graph pick #{n+1}: {r}" if r else f"{self.backend} graph pick #{n+1}. {base}"
                     return [{"name":self.m[i]["name"],"institution":self.m[i]["institution"],"score":round(float(s[i]),3),"reason":why(i,n)} for n,i in enumerate(idx)]
             except Exception: pass
         return [{"name":self.m[i]["name"],"institution":self.m[i]["institution"],"score":round(float(s[i]),3),
-                 "reason":llm(f"In one sentence, why is this person a good speaker for a seminar on '{theme}'? {self.m[i]}") or f"Can talk about \"{self.m[i]['can_talk_about']}\"; teaches {self.m[i]['teaching_topics']}."} for i in idx]
+                 "reason":llm(f"In one sentence, why is this person a good speaker for a seminar on '{theme}'? {self.m[i]}") or _spk(self.m[i])} for i in idx]

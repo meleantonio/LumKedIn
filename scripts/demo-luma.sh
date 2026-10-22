@@ -7,6 +7,7 @@ cd "$(dirname "$0")/.."
 [ -f "$KYM_MEMBERS" ] || { echo "Members file not found: $KYM_MEMBERS" >&2; exit 1; }
 export KYM_MEMBERS
 export KYM_DATASET="${KYM_DATASET:-luma-eveur09a}"
+export KYM_THEME="${KYM_THEME:-AI agents for community ops}"
 export KYM_COMMUNITY="${KYM_COMMUNITY:-Grok Bot London hackathon}"
 [ "${1:-}" = "--backend" ] && export KYM_BACKEND="${2:-tfidf}"
 [ -n "${COGNEE_API_KEY:-}" ] && echo "Cognee key: present" || echo "Cognee key: not set (TF-IDF fallback)"
