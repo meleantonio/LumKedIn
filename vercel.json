@@ -1,0 +1,1 @@
+{ "framework": null, "outputDirectory": "public", "buildCommand": "", "functions": { "api/*.py": { "maxDuration": 60 } } }

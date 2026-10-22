@@ -1,6 +1,2 @@
-scikit-learn
 numpy
-streamlit
-# optional
-# openai
-# supabase
+scikit-learn

@@ -1,73 +1,84 @@
-# Know Your Members 🤝
+# 🤝 LumKedIn: Luma meets LinkedIn
 
-Open-source **member intro and speaker matcher** for communities of practice. Piloted on the *Generative AI in Economics Teaching Community of Practice* (LSE). Built for the Grok Bot Community Engineering London Hackathon, Track 2 "Know Your Members".
+**Live demo:** https://lumkedin.vercel.app
 
-> All sample members in `data/` are **fictional**. Intro emails are **drafts only**. Nothing is ever sent automatically.
+LumKedIn helps a community organiser answer two questions about a room full of people:
 
-## Problem
-Communities grow faster than organisers can learn who's who. The person who wants to learn about AI-proof assessment rarely meets the person who has already redesigned theirs. Finding seminar speakers relies on whoever the organiser happens to remember.
+- **Who should meet whom?** It ranks pairs where one person wants to learn what the other can talk about, and gives a reason and a ready-to-send **intro email draft** for each pair.
+- **Who could speak on X?** It ranks members as speakers for a seminar theme.
 
-## What it does
-- **Ingest** member profiles from CSV or JSON (`name, role, institution, interests, teaching_topics, can_talk_about, wants_to_learn`).
-- **Embed and store**: OpenAI-compatible embeddings if a key is set, otherwise **TF-IDF** so it always runs offline. Vectors are stored in local SQLite (`kym.sqlite`), with an optional Supabase pgvector mirror.
-- **Intros**: ranks cross-institution pairs by profile similarity plus complementarity ("A wants to learn what B can talk about"). Each pair gets a one-line reason and a ready-to-edit intro draft. The LLM writes these if a key is set, otherwise a template does. Each member is capped at 2 intros.
-- **Speaker finder**: give it a seminar theme and get a ranked shortlist with reasons.
-- **Streamlit UI** and a **CLI**.
+Matching runs on an offline TF-IDF matcher with SQLite. When Cognee Cloud credentials are set, it also uses a **Cognee Cloud memory graph** (`/api/v1/recall`), so you get "graph picks" with reasons. Any Cognee failure falls back to TF-IDF automatically. **Drafts only: nothing is ever sent.**
 
-![Intros](docs/screenshot.png)
-![Speaker finder](docs/speakers.png)
+Built for **Track 2 "Know Your Members"** at the **Grok Bot Community Engineering London Hackathon** (22 Oct 2026).
 
-## Run it next week for your community (5 minutes)
-1. Export a member survey (Google Form or MS Form) to CSV with the columns above. The column names must match exactly.
-2. Set up and run:
-```bash
-git clone https://github.com/meleantonio/know-your-members && cd know-your-members
-python3 -m venv .venv && source .venv/bin/activate
-pip install -r requirements.txt
-streamlit run app.py        # then upload your CSV in the sidebar
-```
-3. Or use the CLI:
-```bash
-python -m kym.cli --members your.csv intros -k 8 --drafts
-python -m kym.cli --members your.csv speakers "AI and assessment integrity"
-python -m kym.cli intros --json > intros.json
-```
-4. Optional: `cp .env.example .env`, fill in the keys, then `pip install openai supabase` and `set -a; source .env`.
+## Data and privacy
+- **The live demo** (lumkedin.vercel.app) defaults to profiles of the event's hosts, partners, community leads and judges. They were built **only from public info** on the event's Luma page and the hackathon site. Guesses are labelled "inferred" and unknown fields are left blank. A fictional sample dataset is available in the dataset picker.
+- **This repo ships only fictional data** (`data/sample_members.csv`, 20 invented economics educators). Real people's data lives in `data/private/`, which is gitignored and **never committed**. It is uploaded only to the Vercel deployment by the CLI.
+- **CSVs you upload in the web page** are processed in memory with TF-IDF only. They are never stored and never sent to Cognee.
 
-### Optional Supabase pgvector table
-```sql
-create extension if not exists vector;
-create table members (name text primary key, data jsonb, embedding vector(1536));
-```
-(TF-IDF vectors vary in dimension, so only enable the Supabase mirror together with API embeddings.)
-
-## Optional: Cognee memory backend 🧠
-[Cognee](https://github.com/topoteretes/cognee) (a hackathon technology partner) can serve as the member memory. When enabled, profiles are ingested with `cognee.add` and `cognee.cognify`, which builds a knowledge graph. After that, `cognee.search` (GRAPH_COMPLETION) ranks the speaker shortlist and adds graph context to each intro reason.
-```bash
-pip install -r requirements-cognee.txt      # pinned cognee==1.6.5 (heavy, so it's optional)
-export LLM_API_KEY=...                       # required by Cognee
-# OpenAI-compatible endpoint: also set LLM_PROVIDER / LLM_MODEL / LLM_ENDPOINT (see Cognee docs)
-KYM_BACKEND=cognee streamlit run app.py      # or use the "Memory backend" toggle in the sidebar
-python -m kym.cli --backend cognee speakers "AI and assessment integrity"
-```
-### Backend selection (default: `auto`)
-`KYM_BACKEND=auto` (the default), or the sidebar toggle or `--backend`, picks the backend in this order:
-1. **`cognee-cloud`** if `COGNEE_API_KEY` is set. It recalls over the hosted dataset `know-your-members-demo` (`KYM_COGNEE_DATASET`) through `POST {COGNEE_API_URL}/api/v1/recall` with the `X-Api-Key` header (plus `X-Tenant-Id` if `COGNEE_TENANT_ID` is set). This drives the speaker ranking and the intro "Memory graph:" context.
-2. **`cognee`** (local SDK) if `LLM_API_KEY` is set.
-3. **TF-IDF/SQLite** otherwise. The UI shows a visible notice, and the active backend is always displayed in the UI.
+## Run locally
 
 ```bash
-export COGNEE_API_URL=https://<your-tenant>.aws.cognee.ai   # API Keys page -> Connection Details
-export COGNEE_API_KEY=...                                     # never commit it
-streamlit run app.py
-python -m kym.cli --backend cognee-cloud speakers "classroom simulations"
+git clone https://github.com/meleantonio/LumKedIn && cd LumKedIn
+python3 -m venv .venv && . .venv/bin/activate
+pip install -r requirements-app.txt          # numpy, scikit-learn, streamlit
+streamlit run app.py                          # http://localhost:8501
 ```
-The dataset was ingested through the hosted Cognee MCP connector. See the real recall outputs and timings in [docs/cognee-mcp-demo.md](docs/cognee-mcp-demo.md).
 
-**It never breaks the demo.** If Cognee isn't installed, `LLM_API_KEY` is missing, or ingest or search fails, the app shows a notice and falls back to TF-IDF/SQLite. Code: `kym/cognee_backend.py`.
+**CLI**, using the same engine:
 
-## Privacy
-Get members' consent before you ingest their profiles. Keep real CSVs and `kym.sqlite` out of git (`.gitignore` covers `*.sqlite` and `.env`).
+```bash
+python -m kym.cli intros -k 5 --drafts
+python -m kym.cli speakers "AI and assessment integrity" -k 5
+python -m kym.cli --backend tfidf speakers "classroom simulations"   # force the offline backend
+python -m kym.cli intros --json
+```
 
-## License
-MIT
+**Static web version locally** (the same page as Vercel): `npx vercel dev`, or open `public/index.html` behind any server that runs `api/*.py`.
+
+## Environment variables
+
+| Var | Purpose |
+|---|---|
+| `COGNEE_API_URL`, `COGNEE_API_KEY` | Enable the hosted Cognee Cloud backend (optional `COGNEE_TENANT_ID`). Without them, TF-IDF is used. |
+| `KYM_BACKEND` | `auto` (default), `cognee-cloud`, `cognee` (local SDK, needs `LLM_API_KEY`) or `tfidf` |
+| `KYM_MEMBERS` | Path to the members CSV/JSON for Streamlit (default `data/sample_members.csv`) |
+| `KYM_DATASET` | Cognee dataset name (default `know-your-members-demo`, already populated with the fictional sample) |
+| `KYM_COMMUNITY` | Community name used in the hero header and intro drafts |
+| `KYM_THEME` | Default speaker theme in the Streamlit app |
+
+Copy `.env.example` to `.env`, or export the variables in your shell. Never commit keys.
+
+## Use it for your own community
+
+1. Make a CSV with this header (only `name` is required):
+   `name,role,institution,interests,teaching_topics,can_talk_about,wants_to_learn`
+   Separate list items with `;`. Put it in `data/private/` so git ignores it.
+2. Optional: load it into Cognee Cloud once:
+   `python -m kym.cli --members data/private/mine.csv --dataset mine ingest-cloud`
+3. Run it:
+   `KYM_MEMBERS=data/private/mine.csv KYM_DATASET=mine KYM_COMMUNITY="My community" scripts/demo-luma.sh`
+   Add `--backend tfidf` if Cognee is slow. You can also upload the CSV in the Streamlit sidebar or on the web page.
+
+## Deploy your own copy to Vercel
+
+The web version is `public/index.html` (static, dark UI) plus Python serverless functions `api/members.py`, `api/speakers.py` and `api/intros.py`. They reuse `kym/` and only need `requirements.txt` (numpy and scikit-learn).
+
+```bash
+npm i -g vercel
+vercel deploy --prod --yes                                   # first run creates the project
+printf %s "$COGNEE_API_URL" | vercel env add COGNEE_API_URL production   # optional
+printf %s "$COGNEE_API_KEY" | vercel env add COGNEE_API_KEY production   # optional
+vercel deploy --prod --yes
+```
+
+If `data/private/luma-eveur09a.csv` exists, the CLI uploads it: `.vercelignore` doesn't exclude it, while `.gitignore` does. The deployment then defaults to it. Otherwise it uses the fictional sample. Edit `SETS` in `api/_shared.py` to point at your own private CSV and Cognee dataset.
+
+API: `POST /api/speakers {"theme": "...", "k": 5, "dataset": "luma"|"sample", "csv": "<optional csv text>"}`, `POST /api/intros {"k": 3}`, `POST /api/members {}`.
+
+## More
+- `DEMO.md`: the 3-minute demo script. `docs/cognee-mcp-demo.md`: Cognee MCP remember/recall walkthrough.
+- Screenshots: `docs/ui-intros.png`, `docs/ui-speakers.png`, `docs/ui-members.png` (fictional data).
+
+## Licence
+MIT. See `LICENSE`.

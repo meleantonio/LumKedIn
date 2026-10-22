@@ -1,0 +1,7 @@
+.venv
+kym.sqlite
+docs
+scripts
+.streamlit
+app.py
+*.png
