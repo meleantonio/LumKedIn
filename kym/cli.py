@@ -1,7 +1,7 @@
 import argparse, json
 from .core import load_members, Matcher
 def main():
-    p=argparse.ArgumentParser(prog="kym",description="Know Your Members: intro + speaker matcher")
+    p=argparse.ArgumentParser(prog="kym",description="LumKedIn (Luma meets LinkedIn): intro + speaker matcher")
     p.add_argument("--members",default="data/sample_members.csv")
     p.add_argument("--backend",choices=["auto","cognee-cloud","cognee","tfidf"],default=None,help="default: $KYM_BACKEND or auto")
     p.add_argument("--dataset",default=None,help="Cognee dataset name (default: $KYM_DATASET or know-your-members-demo)")

@@ -1,7 +1,7 @@
 import streamlit as st, tempfile, os, html, hashlib
 from kym.core import load_members, Matcher
 from kym import cognee_cloud as _cc
-st.set_page_config(page_title="Know Your Members", page_icon="🤝", layout="wide")
+st.set_page_config(page_title="LumKedIn", page_icon="🤝", layout="wide")
 E = lambda s: html.escape(str(s or ""))
 
 st.markdown("""<style>
@@ -84,7 +84,7 @@ byname={p["name"]:p for p in m.m}
 comm=os.getenv("KYM_COMMUNITY","Generative AI in Economics Teaching CoP (fictional sample data)")
 
 ok=m.backend.startswith("cognee")
-st.markdown(f"""<div class="hero"><h1>🤝 Know Your Members</h1>
+st.markdown(f"""<div class="hero"><h1>🤝 LumKedIn <span style="font-weight:500;font-size:1rem;opacity:.8">Luma meets LinkedIn</span></h1>
 <p>Who should meet whom, and who can speak on what: {E(comm)}. Drafts only, nothing is sent.</p>
 <span class="pill"><span class="dot{'' if ok else ' warn'}"></span>Active backend: {E(m.backend)}</span>
 <span class="pill">👥 {len(m.m)} members</span><span class="pill">🧠 dataset: {E(ds)}</span></div>""",unsafe_allow_html=True)

@@ -1,4 +1,6 @@
-# 3-minute demo script
+# LumKedIn: 3-minute demo script
+
+*LumKedIn (Luma meets LinkedIn), formerly "Know Your Members". Run locally with Streamlit; live web version on Vercel (see README).*
 
 **0:00–0:30 Problem.** "I run the Generative AI in Economics Teaching CoP. With 100+ educators I can't remember who should meet whom, or who could give next month's seminar." Mention that the data is 20 fictional members.
 
