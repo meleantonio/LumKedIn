@@ -1,0 +1,182 @@
+[
+ {
+  "name": "Dr Amara Okafor",
+  "role": "Senior Lecturer",
+  "institution": "Northbridge University",
+  "interests": "labour economics; AI tutors",
+  "teaching_topics": "intro micro; labour",
+  "can_talk_about": "using ChatGPT for problem-set feedback",
+  "wants_to_learn": "assessment design with AI"
+ },
+ {
+  "name": "Prof Lukas Brenner",
+  "role": "Professor",
+  "institution": "Valewood College",
+  "interests": "econometrics; reproducibility",
+  "teaching_topics": "econometrics; R",
+  "can_talk_about": "LLMs writing and debugging R code for econometrics",
+  "wants_to_learn": "prompting for qualitative essays"
+ },
+ {
+  "name": "Ms Priya Raman",
+  "role": "Teaching Fellow",
+  "institution": "Harbourside School of Economics",
+  "interests": "macro; simulations",
+  "teaching_topics": "intermediate macro",
+  "can_talk_about": "classroom simulations of monetary policy with AI agents",
+  "wants_to_learn": "LLM coding assistants"
+ },
+ {
+  "name": "Dr Tomasz Wilk",
+  "role": "Lecturer",
+  "institution": "Eastmoor University",
+  "interests": "behavioural economics; experiments",
+  "teaching_topics": "behavioural econ",
+  "can_talk_about": "running classroom experiments with AI-generated scenarios",
+  "wants_to_learn": "AI assessment integrity"
+ },
+ {
+  "name": "Dr Sofia Marquez",
+  "role": "Associate Professor",
+  "institution": "Riverside Institute",
+  "interests": "development economics; equity",
+  "teaching_topics": "development",
+  "can_talk_about": "AI and inclusive teaching for non-native speakers",
+  "wants_to_learn": "econometrics with Python"
+ },
+ {
+  "name": "Mr Jonah Feld",
+  "role": "PhD Teaching Assistant",
+  "institution": "Northbridge University",
+  "interests": "industrial organisation; Python",
+  "teaching_topics": "IO; data science",
+  "can_talk_about": "building Python notebooks with Copilot",
+  "wants_to_learn": "giving lectures on AI ethics"
+ },
+ {
+  "name": "Dr Hana Suzuki",
+  "role": "Lecturer",
+  "institution": "Kingsgate University",
+  "interests": "public economics; policy",
+  "teaching_topics": "public econ",
+  "can_talk_about": "AI policy briefs as student assignments",
+  "wants_to_learn": "simulations for macro"
+ },
+ {
+  "name": "Prof Edwin Hale",
+  "role": "Head of Department",
+  "institution": "Valewood College",
+  "interests": "curriculum design; AI strategy",
+  "teaching_topics": "history of thought",
+  "can_talk_about": "department-wide AI policy and academic integrity",
+  "wants_to_learn": "AI tutors in large courses"
+ },
+ {
+  "name": "Dr Leila Haddad",
+  "role": "Senior Lecturer",
+  "institution": "Harbourside School of Economics",
+  "interests": "finance; assessment",
+  "teaching_topics": "financial economics",
+  "can_talk_about": "authentic assessment that resists AI shortcuts",
+  "wants_to_learn": "classroom experiments"
+ },
+ {
+  "name": "Ms Grace Owusu",
+  "role": "Learning Technologist",
+  "institution": "Riverside Institute",
+  "interests": "edtech; Moodle; chatbots",
+  "teaching_topics": "digital pedagogy",
+  "can_talk_about": "deploying custom course chatbots safely",
+  "wants_to_learn": "economics-specific prompting"
+ },
+ {
+  "name": "Dr Mateo Ricci",
+  "role": "Lecturer",
+  "institution": "Eastmoor University",
+  "interests": "environmental economics; climate",
+  "teaching_topics": "environmental econ",
+  "can_talk_about": "AI-assisted climate policy case studies",
+  "wants_to_learn": "Python data visualisation"
+ },
+ {
+  "name": "Dr Ingrid Solberg",
+  "role": "Associate Professor",
+  "institution": "Kingsgate University",
+  "interests": "econometrics; causal inference",
+  "teaching_topics": "applied econometrics",
+  "can_talk_about": "teaching causal inference with LLM explanations",
+  "wants_to_learn": "inclusive teaching"
+ },
+ {
+  "name": "Mr Ravi Menon",
+  "role": "Teaching Fellow",
+  "institution": "Northbridge University",
+  "interests": "macro; writing",
+  "teaching_topics": "macro; essay writing",
+  "can_talk_about": "AI feedback on student essays",
+  "wants_to_learn": "agent-based simulation"
+ },
+ {
+  "name": "Dr Claire Dubois",
+  "role": "Lecturer",
+  "institution": "Valewood College",
+  "interests": "game theory; experiments",
+  "teaching_topics": "game theory",
+  "can_talk_about": "LLM agents playing strategic games in class",
+  "wants_to_learn": "assessment redesign"
+ },
+ {
+  "name": "Prof Kwame Asante",
+  "role": "Professor",
+  "institution": "Riverside Institute",
+  "interests": "development; political economy",
+  "teaching_topics": "political economy",
+  "can_talk_about": "AI ethics and bias in economic data",
+  "wants_to_learn": "AI coding for students"
+ },
+ {
+  "name": "Dr Nadia Petrova",
+  "role": "Senior Lecturer",
+  "institution": "Harbourside School of Economics",
+  "interests": "labour; gender",
+  "teaching_topics": "labour econ",
+  "can_talk_about": "AI tutors and student wellbeing",
+  "wants_to_learn": "department AI strategy"
+ },
+ {
+  "name": "Ms Elena Costa",
+  "role": "PhD Teaching Assistant",
+  "institution": "Kingsgate University",
+  "interests": "computational economics; Julia",
+  "teaching_topics": "computational methods",
+  "can_talk_about": "coding agents for economic modelling",
+  "wants_to_learn": "giving feedback at scale"
+ },
+ {
+  "name": "Dr Felix Wagner",
+  "role": "Lecturer",
+  "institution": "Eastmoor University",
+  "interests": "monetary economics",
+  "teaching_topics": "money and banking",
+  "can_talk_about": "central bank communication analysis with LLMs",
+  "wants_to_learn": "classroom simulations"
+ },
+ {
+  "name": "Dr Aisha Bello",
+  "role": "Associate Professor",
+  "institution": "Northbridge University",
+  "interests": "health economics; assessment",
+  "teaching_topics": "health econ",
+  "can_talk_about": "oral exams and viva as AI-proof assessment",
+  "wants_to_learn": "custom chatbots"
+ },
+ {
+  "name": "Mr Oliver Grant",
+  "role": "Learning Designer",
+  "institution": "Valewood College",
+  "interests": "curriculum; accessibility",
+  "teaching_topics": "pedagogy",
+  "can_talk_about": "accessible AI-enhanced course materials",
+  "wants_to_learn": "econometrics teaching with AI"
+ }
+]

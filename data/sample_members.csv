@@ -1,0 +1,21 @@
+name,role,institution,interests,teaching_topics,can_talk_about,wants_to_learn
+Dr Amara Okafor,Senior Lecturer,Northbridge University,labour economics; AI tutors,intro micro; labour,using ChatGPT for problem-set feedback,assessment design with AI
+Prof Lukas Brenner,Professor,Valewood College,econometrics; reproducibility,econometrics; R,LLMs writing and debugging R code for econometrics,prompting for qualitative essays
+Ms Priya Raman,Teaching Fellow,Harbourside School of Economics,macro; simulations,intermediate macro,classroom simulations of monetary policy with AI agents,LLM coding assistants
+Dr Tomasz Wilk,Lecturer,Eastmoor University,behavioural economics; experiments,behavioural econ,running classroom experiments with AI-generated scenarios,AI assessment integrity
+Dr Sofia Marquez,Associate Professor,Riverside Institute,development economics; equity,development,AI and inclusive teaching for non-native speakers,econometrics with Python
+Mr Jonah Feld,PhD Teaching Assistant,Northbridge University,industrial organisation; Python,IO; data science,building Python notebooks with Copilot,giving lectures on AI ethics
+Dr Hana Suzuki,Lecturer,Kingsgate University,public economics; policy,public econ,AI policy briefs as student assignments,simulations for macro
+Prof Edwin Hale,Head of Department,Valewood College,curriculum design; AI strategy,history of thought,department-wide AI policy and academic integrity,AI tutors in large courses
+Dr Leila Haddad,Senior Lecturer,Harbourside School of Economics,finance; assessment,financial economics,authentic assessment that resists AI shortcuts,classroom experiments
+Ms Grace Owusu,Learning Technologist,Riverside Institute,edtech; Moodle; chatbots,digital pedagogy,deploying custom course chatbots safely,economics-specific prompting
+Dr Mateo Ricci,Lecturer,Eastmoor University,environmental economics; climate,environmental econ,AI-assisted climate policy case studies,Python data visualisation
+Dr Ingrid Solberg,Associate Professor,Kingsgate University,econometrics; causal inference,applied econometrics,teaching causal inference with LLM explanations,inclusive teaching
+Mr Ravi Menon,Teaching Fellow,Northbridge University,macro; writing,macro; essay writing,AI feedback on student essays,agent-based simulation
+Dr Claire Dubois,Lecturer,Valewood College,game theory; experiments,game theory,LLM agents playing strategic games in class,assessment redesign
+Prof Kwame Asante,Professor,Riverside Institute,development; political economy,political economy,AI ethics and bias in economic data,AI coding for students
+Dr Nadia Petrova,Senior Lecturer,Harbourside School of Economics,labour; gender,labour econ,AI tutors and student wellbeing,department AI strategy
+Ms Elena Costa,PhD Teaching Assistant,Kingsgate University,computational economics; Julia,computational methods,coding agents for economic modelling,giving feedback at scale
+Dr Felix Wagner,Lecturer,Eastmoor University,monetary economics,money and banking,central bank communication analysis with LLMs,classroom simulations
+Dr Aisha Bello,Associate Professor,Northbridge University,health economics; assessment,health econ,oral exams and viva as AI-proof assessment,custom chatbots
+Mr Oliver Grant,Learning Designer,Valewood College,curriculum; accessibility,pedagogy,accessible AI-enhanced course materials,econometrics teaching with AI
